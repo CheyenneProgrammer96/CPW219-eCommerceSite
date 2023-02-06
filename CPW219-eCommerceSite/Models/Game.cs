@@ -23,7 +23,7 @@ namespace CPW219_eCommerceSite.Models
         /// The sales price of the game
         /// </summary>
         [Range(0, 1000)]
-        public double Price { get; set; }
+        public double Price { get; set; } 
         
         // TODO: Add rating
     }
