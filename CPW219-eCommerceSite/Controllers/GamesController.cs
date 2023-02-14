@@ -1,6 +1,7 @@
 ﻿using CPW219_eCommerceSite.Data;
 using CPW219_eCommerceSite.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace CPW219_eCommerceSite.Controllers
 {
@@ -11,6 +12,15 @@ namespace CPW219_eCommerceSite.Controllers
         public GamesController(VideoGameContext context)
         {
             _context = context;
+        }
+
+        public async Task<IActionResult> Index()
+        {
+           // List<Game> games = _context.Games.ToList(); // Method syntax
+           List <Game> games = await (from game in _context.Games // Query syntax
+                                    select game).ToListAsync();
+
+            return View(games);
         }
 
         [HttpGet]
@@ -25,7 +35,9 @@ namespace CPW219_eCommerceSite.Controllers
             if (ModelState.IsValid) 
             {
                 _context.Games.Add(g);  // Prepares insert
-              await _context.SaveChangesAsync(); // Executes pending insert
+             // For async code info in the turtorial
+             // https://learn.microsoft.com/en-us/aspnet/core/data/ef-mvc/intro?view=aspnetcore-6.0#asynchronous-code
+                await _context.SaveChangesAsync(); // Executes pending insert
 
                 ViewData["Message"] = $"{g.Title} was added successfully!";
                 return View();
