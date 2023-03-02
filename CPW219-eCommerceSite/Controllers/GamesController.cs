@@ -20,15 +20,20 @@ namespace CPW219_eCommerceSite.Controllers
             const int NumGamesToDisplayPerPage = 3;
             const int PageOffset = 1; // Need a page offset to use current page and figure out, num games to skip
 
-            int currPage = id ?? 1; // Set currPage to id if it has a value, otherwise use 1
+            int currPage = id ?? 1; // Set currPage to id if it has a maxNumPages, otherwise use 1
 
-           List <Game> games = await (from game in _context.Games // Query syntax
+            int totalNumOfProducts = await _context.Games.CountAsync();
+            double maxNumPages = Math.Ceiling((double)totalNumOfProducts / NumGamesToDisplayPerPage);
+            int lastPage = Convert.ToInt32(maxNumPages); // Rounding pages up, to next whole page number
+
+           List <Game> games = await (from game in _context.Games
                                     select game)
                                     .Skip(NumGamesToDisplayPerPage * (currPage - PageOffset))
                                     .Take(NumGamesToDisplayPerPage)
                                     .ToListAsync();
 
-            return View(games);
+            GameCatalogViewModel catalogModel = new(games, lastPage, currPage);
+            return View(catalogModel);
         }
 
         [HttpGet]
