@@ -2,6 +2,7 @@
 using CPW219_eCommerceSite.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Dynamic;
 
 namespace CPW219_eCommerceSite.Controllers
 {
@@ -14,11 +15,18 @@ namespace CPW219_eCommerceSite.Controllers
             _context = context;
         }
 
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int? id)
         {
-           // List<Game> games = _context.Games.ToList(); // Method syntax
+            const int NumGamesToDisplayPerPage = 3;
+            const int PageOffset = 1; // Need a page offset to use current page and figure out, num games to skip
+
+            int currPage = id ?? 1; // Set currPage to id if it has a value, otherwise use 1
+
            List <Game> games = await (from game in _context.Games // Query syntax
-                                    select game).ToListAsync();
+                                    select game)
+                                    .Skip(NumGamesToDisplayPerPage * (currPage - PageOffset))
+                                    .Take(NumGamesToDisplayPerPage)
+                                    .ToListAsync();
 
             return View(games);
         }
