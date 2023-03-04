@@ -2,7 +2,7 @@
 
 ## Description
 This site is a practice website to showcase a website selling different types of 
-products and their typical prices. Currently a work in progress
+products and their typical prices.
 
 ## Prerequisites
 - Visual Studio 2022
